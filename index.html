@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora Shopee</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(145deg, #ff5722, #ff9a6a);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 440px;
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 22px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+h1 {
+    text-align: center;
+    color: #ff5722;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin: 15px 0 8px;
+}
+
+.card {
+    background: #f7f7f7;
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+}
+
+label {
+    font-size: 13px;
+    color: #444;
+}
+
+input {
+    width: 100%;
+    padding: 11px;
+    margin-top: 6px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #ff5722;
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #ff5722, #ff7043);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.result {
+    margin-top: 22px;
+    padding: 18px;
+    border-radius: 16px;
+    font-size: 15px;
+}
+
+.result.good {
+    background: #e8f5e9;
+    border-left: 6px solid #2e7d32;
+}
+
+.result.bad {
+    background: #fdecea;
+    border-left: 6px solid #c62828;
+}
+
+.result.neutral {
+    background: #fff3e0;
+    border-left: 6px solid #ff8f00;
+}
+
+.result strong {
+    font-weight: 700;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Calculadora Shopee</h1>
+    <div class="subtitle">Precificação inteligente e lucro real</div>
+
+    <div class="section-title">📌 CUSTO (OBRIGATÓRIO)</div>
+    <div class="card">
+        <label>Custo do produto (R$)</label>
+        <input type="number" id="custo">
+    </div>
+
+    <div class="section-title">📊 TAXAS (OBRIGATÓRIO)</div>
+    <div class="card">
+        <label>Comissão Shopee (%)</label>
+        <input type="number" id="comissao" value="14">
+    </div>
+
+    <div class="card">
+        <label>Taxa fixa (R$)</label>
+        <input type="number" id="taxaFixa" value="0">
+    </div>
+
+    <div class="card">
+        <label>Frete pago por você (R$)</label>
+        <input type="number" id="frete" value="0">
+    </div>
+
+    <div class="section-title">🎯 DEFINIÇÃO DE PREÇO (OPCIONAL)</div>
+    <div class="card">
+        <label>Preço de venda (R$)</label>
+        <input type="number" id="precoVenda">
+    </div>
+
+    <div class="card">
+        <label>Lucro desejado (R$)</label>
+        <input type="number" id="lucroDesejado">
+    </div>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div class="result neutral" id="resultado">
+        Preencha o custo e as taxas para começar.
+    </div>
+</div>
+
+<script>
+function calcular() {
+    let custo = parseFloat(document.getElementById("custo").value);
+    let comissao = parseFloat(document.getElementById("comissao").value);
+    let taxaFixa = parseFloat(document.getElementById("taxaFixa").value);
+    let frete = parseFloat(document.getElementById("frete").value);
+    let precoVenda = parseFloat(document.getElementById("precoVenda").value) || 0;
+    let lucroDesejado = parseFloat(document.getElementById("lucroDesejado").value) || 0;
+
+    let resultado = document.getElementById("resultado");
+
+    if (!custo || comissao === null) {
+        resultado.className = "result neutral";
+        resultado.innerHTML = "⚠️ O custo do produto e as taxas são obrigatórios.";
+        return;
+    }
+
+    let custoTotal = custo + taxaFixa + frete;
+
+    if (precoVenda > 0) {
+        let valorComissao = precoVenda * (comissao / 100);
+        let lucro = precoVenda - valorComissao - custoTotal;
+        let margem = (lucro / precoVenda) * 100;
+
+        if (margem >= 20) {
+            resultado.className = "result good";
+            resultado.innerHTML = `
+                🟢 <strong>Margem saudável</strong><br><br>
+                💸 Comissão: R$ ${valorComissao.toFixed(2)}<br>
+                📦 Custo total: R$ ${custoTotal.toFixed(2)}<br>
+                🔥 Lucro: <strong>R$ ${lucro.toFixed(2)}</strong><br>
+                📊 Margem: <strong>${margem.toFixed(2)}%</strong>
+            `;
+        } else {
+            resultado.className = "result bad";
+            resultado.innerHTML = `
+                🔴 <strong>Margem NÃO saudável</strong><br><br>
+                💸 Comissão: R$ ${valorComissao.toFixed(2)}<br>
+                📦 Custo total: R$ ${custoTotal.toFixed(2)}<br>
+                ⚠️ Lucro: R$ ${lucro.toFixed(2)}<br>
+                📊 Margem: <strong>${margem.toFixed(2)}%</strong>
+            `;
+        }
+        return;
+    }
+
+    if (lucroDesejado > 0) {
+        let precoIdeal = (custoTotal + lucroDesejado) / (1 - (comissao / 100));
+
+        resultado.className = "result good";
+        resultado.innerHTML = `
+            🎯 <strong>Preço ideal calculado</strong><br><br>
+            💰 Lucro desejado: R$ ${lucroDesejado.toFixed(2)}<br>
+            🏷️ Preço mínimo de venda:<br>
+            <span style="font-size:20px"><strong>R$ ${precoIdeal.toFixed(2)}</strong></span>
+        `;
+        return;
+    }
+
+    resultado.className = "result neutral";
+    resultado.innerHTML = "ℹ️ Informe o preço de venda ou o lucro desejado.";
+}
+</script>
+
+</body>
+</html>
