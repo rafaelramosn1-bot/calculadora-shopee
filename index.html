@@ -1,161 +1,230 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora Shopee</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora Shopee | ML</title>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+  <style>
+    :root {
+      --laranja: #ee4d2d;
+      --laranja-claro: #fff3ef;
+      --azul: #2b6cff;
+      --verde: #2ecc71;
+      --vermelho: #e74c3c;
+    }
 
-body{
-    font-family:Poppins,sans-serif;
-    background:linear-gradient(145deg,#ff5722,#ff9a6a);
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin:0;
-}
-.container{
-    background:#fff;
-    width:100%;
-    max-width:450px;
-    padding:28px;
-    border-radius:22px;
-    box-shadow:0 20px 50px rgba(0,0,0,.25);
-}
-h1{
-    text-align:center;
-    color:#ff5722;
-}
-.subtitle{
-    text-align:center;
-    color:#777;
-    font-size:14px;
-    margin-bottom:20px;
-}
-.card{
-    background:#f7f7f7;
-    padding:14px;
-    border-radius:14px;
-    margin-bottom:12px;
-}
-label{
-    font-size:13px;
-}
-input, select{
-    width:100%;
-    padding:11px;
-    margin-top:6px;
-    border-radius:12px;
-    border:1px solid #ddd;
-    font-size:15px;
-}
-button{
-    width:100%;
-    padding:16px;
-    margin-top:10px;
-    background:linear-gradient(135deg,#ff5722,#ff7043);
-    border:none;
-    border-radius:16px;
-    color:#fff;
-    font-size:17px;
-    font-weight:700;
-}
-.result{
-    margin-top:20px;
-    padding:18px;
-    border-radius:16px;
-    font-size:15px;
-}
-.good{background:#e8f5e9;border-left:6px solid #2e7d32;}
-.bad{background:#fdecea;border-left:6px solid #c62828;}
-.neutral{background:#fff3e0;border-left:6px solid #ff8f00;}
-</style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--laranja-claro);
+    }
+
+    .app {
+      max-width: 420px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .header {
+      background: var(--laranja);
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .row input {
+      flex: 1;
+    }
+
+    label {
+      font-size: 13px;
+      color: #555;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+    }
+
+    .toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--laranja);
+      background: white;
+      color: var(--laranja);
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .toggle button.active {
+      background: var(--laranja);
+      color: white;
+    }
+
+    .resultado {
+      text-align: center;
+    }
+
+    .preco {
+      font-size: 26px;
+      color: var(--azul);
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .status.ok {
+      color: var(--verde);
+      font-weight: bold;
+    }
+
+    .status.bad {
+      color: var(--vermelho);
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
-<h1>Calculadora Shopee</h1>
-<div class="subtitle">Lucro real com taxas corretas</div>
+  <div class="app">
 
-<div class="card">
-<label>Custo do produto (R$) *</label>
-<input type="number" id="custo">
-</div>
+    <div class="header">Shopee | ML</div>
 
-<div class="card">
-<label>Comissão Shopee *</label>
-<select id="comissaoTipo">
-<option value="14">14% + R$4</option>
-<option value="20">20% + R$4</option>
-</select>
-</div>
+    <div class="card">
+      <label>Comissão (%)</label>
+      <input type="number" id="comissao" value="12">
 
-<div class="card">
-<label>Taxa fixa extra (R$) (opcional)</label>
-<input type="number" id="taxaExtra" value="0">
-</div>
+      <label>Taxa fixa (R$)</label>
+      <input type="number" id="taxaFixa" value="4">
 
-<div class="card">
-<label>Preço de venda (R$) (opcional)</label>
-<input type="number" id="precoVenda">
-</div>
+      <label>Imposto (%)</label>
+      <input type="number" id="imposto" value="0">
+    </div>
 
-<button onclick="calcular()">Calcular</button>
+    <div class="card">
+      <label>Custo do produto</label>
+      <input type="number" id="custoProduto">
 
-<div id="resultado" class="result neutral">
-Preencha o custo e escolha a comissão.
-</div>
-</div>
+      <label>Embalagem / Outros</label>
+      <input type="number" id="outros">
+    </div>
+
+    <div class="card">
+      <div class="toggle">
+        <button id="btnMargem" class="active">Por Margem (%)</button>
+        <button id="btnPreco">Por Preço (R$)</button>
+      </div>
+
+      <div id="campoMargem">
+        <label>Margem desejada (%)</label>
+        <input type="number" id="margem">
+      </div>
+
+      <div id="campoPreco" style="display:none">
+        <label>Preço de venda</label>
+        <input type="number" id="precoVenda">
+      </div>
+    </div>
+
+    <div class="card resultado">
+      <div id="precoSugeridoBox">
+        <div>Preço sugerido</div>
+        <div class="preco" id="precoSugerido">R$ 0,00</div>
+      </div>
+
+      <div>Lucro líquido: <strong id="lucro">R$ 0,00</strong></div>
+      <div>Margem real: <strong id="margemReal">0%</strong></div>
+      <div class="status" id="status"></div>
+    </div>
+
+  </div>
 
 <script>
-function calcular(){
-    let custo = parseFloat(custoInput = document.getElementById("custo").value);
-    let preco = parseFloat(document.getElementById("precoVenda").value) || 0;
-    let taxaExtra = parseFloat(document.getElementById("taxaExtra").value) || 0;
-    let comissaoPercent = parseFloat(document.getElementById("comissaoTipo").value);
-    let taxaShopeeFixa = 4;
-    let res = document.getElementById("resultado");
+  const btnMargem = document.getElementById("btnMargem");
+  const btnPreco = document.getElementById("btnPreco");
+  const campoMargem = document.getElementById("campoMargem");
+  const campoPreco = document.getElementById("campoPreco");
+  const precoBox = document.getElementById("precoSugeridoBox");
 
-    if(!custo){
-        res.className="result neutral";
-        res.innerText="Informe o custo do produto.";
-        return;
+  btnMargem.onclick = () => {
+    btnMargem.classList.add("active");
+    btnPreco.classList.remove("active");
+    campoMargem.style.display = "block";
+    campoPreco.style.display = "none";
+    precoBox.style.display = "block";
+  };
+
+  btnPreco.onclick = () => {
+    btnPreco.classList.add("active");
+    btnMargem.classList.remove("active");
+    campoPreco.style.display = "block";
+    campoMargem.style.display = "none";
+    precoBox.style.display = "none";
+  };
+
+  document.querySelectorAll("input").forEach(i =>
+    i.addEventListener("input", calcular)
+  );
+
+  function calcular() {
+    const custo = (+custoProduto.value || 0) + (+outros.value || 0);
+    const comissao = (+comissao.value || 0) / 100;
+    const imposto = (+imposto.value || 0) / 100;
+    const taxa = +taxaFixa.value || 0;
+
+    let preco = 0;
+
+    if (btnMargem.classList.contains("active")) {
+      const margem = (+margem.value || 0) / 100;
+      preco = (custo + taxa) / (1 - comissao - imposto - margem);
+      precoSugerido.innerText = "R$ " + preco.toFixed(2);
+    } else {
+      preco = +precoVenda.value || 0;
     }
 
-    if(preco > 0){
-        let comissaoShopee = (preco * (comissaoPercent/100)) + taxaShopeeFixa;
-        let custoTotal = custo + comissaoShopee + taxaExtra;
-        let lucro = preco - custoTotal;
-        let margem = (lucro / preco) * 100;
+    const taxas = preco * (comissao + imposto) + taxa;
+    const lucro = preco - taxas - custo;
+    const margemReal = preco > 0 ? (lucro / preco) * 100 : 0;
 
-        if(margem >= 20){
-            res.className="result good";
-            res.innerHTML=`
-            🟢 <strong>Margem saudável</strong><br><br>
-            💼 Shopee fica com: <strong>R$ ${comissaoShopee.toFixed(2)}</strong><br>
-            📦 Custo total: <strong>R$ ${custoTotal.toFixed(2)}</strong><br>
-            🔥 Lucro líquido: <strong>R$ ${lucro.toFixed(2)}</strong><br>
-            📊 Margem: <strong>${margem.toFixed(2)}%</strong><br><br>
-            🏷️ Preço de venda já inclui custo + taxas + lucro
-            `;
-        }else{
-            res.className="result bad";
-            res.innerHTML=`
-            🔴 <strong>Margem NÃO saudável</strong><br><br>
-            💼 Shopee fica com: R$ ${comissaoShopee.toFixed(2)}<br>
-            📦 Custo total: R$ ${custoTotal.toFixed(2)}<br>
-            ⚠️ Lucro: R$ ${lucro.toFixed(2)}<br>
-            📊 Margem: ${margem.toFixed(2)}%
-            `;
-        }
-    }else{
-        res.className="result neutral";
-        res.innerText="Informe um preço de venda para calcular lucro e margem.";
+    document.getElementById("lucro").innerText = "R$ " + lucro.toFixed(2);
+    document.getElementById("margemReal").innerText = margemReal.toFixed(2) + "%";
+
+    const status = document.getElementById("status");
+    if (margemReal >= 20) {
+      status.innerText = "Margem saudável";
+      status.className = "status ok";
+    } else {
+      status.innerText = "Margem não saudável";
+      status.className = "status bad";
     }
-}
+  }
 </script>
 </body>
 </html>
