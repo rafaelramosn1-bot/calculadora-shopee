@@ -1,230 +1,244 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora Shopee | ML</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Shopee | ML</title>
 
-  <style>
-    :root {
-      --laranja: #ee4d2d;
-      --laranja-claro: #fff3ef;
-      --azul: #2b6cff;
-      --verde: #2ecc71;
-      --vermelho: #e74c3c;
-    }
+<style>
+:root{
+  --laranja:#ee4d2d;
+  --laranja-claro:#fff3ef;
+  --azul:#2b6cff;
+  --verde:#2ecc71;
+  --vermelho:#e74c3c;
+}
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--laranja-claro);
-    }
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--laranja-claro);
+}
 
-    .app {
-      max-width: 420px;
-      margin: auto;
-      padding: 16px;
-    }
+.app{
+  max-width:420px;
+  margin:auto;
+  padding:16px;
+}
 
-    .header {
-      background: var(--laranja);
-      color: white;
-      padding: 14px;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 16px;
-    }
+.header{
+  background:var(--laranja);
+  color:#fff;
+  padding:14px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:bold;
+  margin-bottom:12px;
+}
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
+.toggle{
+  display:flex;
+  gap:8px;
+  margin-bottom:14px;
+}
 
-    .row {
-      display: flex;
-      gap: 10px;
-    }
+.toggle button{
+  flex:1;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid var(--laranja);
+  background:#fff;
+  color:var(--laranja);
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    .row input {
-      flex: 1;
-    }
+.toggle button.active{
+  background:var(--laranja);
+  color:#fff;
+}
 
-    label {
-      font-size: 13px;
-      color: #555;
-      display: block;
-      margin-bottom: 4px;
-    }
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,.05);
+}
 
-    input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 15px;
-    }
+label{
+  font-size:13px;
+  color:#555;
+  display:block;
+  margin-bottom:4px;
+}
 
-    .toggle {
-      display: flex;
-      gap: 8px;
-    }
+input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  font-size:15px;
+  margin-bottom:10px;
+}
 
-    .toggle button {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--laranja);
-      background: white;
-      color: var(--laranja);
-      font-weight: bold;
-      cursor: pointer;
-    }
+input:disabled{
+  background:#f2f2f2;
+  color:#999;
+}
 
-    .toggle button.active {
-      background: var(--laranja);
-      color: white;
-    }
+.resultado{
+  text-align:center;
+}
 
-    .resultado {
-      text-align: center;
-    }
+.preco{
+  font-size:26px;
+  font-weight:bold;
+  color:var(--azul);
+  margin:8px 0;
+}
 
-    .preco {
-      font-size: 26px;
-      color: var(--azul);
-      font-weight: bold;
-      margin: 10px 0;
-    }
-
-    .status.ok {
-      color: var(--verde);
-      font-weight: bold;
-    }
-
-    .status.bad {
-      color: var(--vermelho);
-      font-weight: bold;
-    }
-  </style>
+.status.ok{color:var(--verde);font-weight:bold;}
+.status.bad{color:var(--vermelho);font-weight:bold;}
+</style>
 </head>
 
 <body>
-  <div class="app">
+<div class="app">
 
-    <div class="header">Shopee | ML</div>
+  <!-- Plataforma -->
+  <div class="header">Shopee | ML</div>
 
-    <div class="card">
-      <label>Comissão (%)</label>
-      <input type="number" id="comissao" value="12">
-
-      <label>Taxa fixa (R$)</label>
-      <input type="number" id="taxaFixa" value="4">
-
-      <label>Imposto (%)</label>
-      <input type="number" id="imposto" value="0">
-    </div>
-
-    <div class="card">
-      <label>Custo do produto</label>
-      <input type="number" id="custoProduto">
-
-      <label>Embalagem / Outros</label>
-      <input type="number" id="outros">
-    </div>
-
-    <div class="card">
-      <div class="toggle">
-        <button id="btnMargem" class="active">Por Margem (%)</button>
-        <button id="btnPreco">Por Preço (R$)</button>
-      </div>
-
-      <div id="campoMargem">
-        <label>Margem desejada (%)</label>
-        <input type="number" id="margem">
-      </div>
-
-      <div id="campoPreco" style="display:none">
-        <label>Preço de venda</label>
-        <input type="number" id="precoVenda">
-      </div>
-    </div>
-
-    <div class="card resultado">
-      <div id="precoSugeridoBox">
-        <div>Preço sugerido</div>
-        <div class="preco" id="precoSugerido">R$ 0,00</div>
-      </div>
-
-      <div>Lucro líquido: <strong id="lucro">R$ 0,00</strong></div>
-      <div>Margem real: <strong id="margemReal">0%</strong></div>
-      <div class="status" id="status"></div>
-    </div>
-
+  <!-- Tipo de cálculo -->
+  <div class="toggle">
+    <button id="btnPreco" class="active">Preço Fixo (R$)</button>
+    <button id="btnMargem">Margem (%)</button>
   </div>
 
+  <!-- Preço ou Margem -->
+  <div class="card">
+    <div id="campoPreco">
+      <label>Preço de venda</label>
+      <input type="number" id="precoVenda">
+    </div>
+
+    <div id="campoMargem" style="display:none">
+      <label>Margem desejada (%)</label>
+      <input type="number" id="margem">
+    </div>
+  </div>
+
+  <!-- Custos -->
+  <div class="card">
+    <label>Custo do produto</label>
+    <input type="number" id="custoProduto" disabled>
+
+    <label>Embalagem / Outros</label>
+    <input type="number" id="embalagem">
+  </div>
+
+  <!-- Taxas -->
+  <div class="card">
+    <label>Comissão (%)</label>
+    <input type="number" id="comissao">
+
+    <label>Imposto (%)</label>
+    <input type="number" id="imposto">
+
+    <label>Taxa fixa (R$)</label>
+    <input type="number" id="taxaFixa">
+  </div>
+
+  <!-- Resultado -->
+  <div class="card resultado">
+    <div id="precoSugeridoBox" style="display:none">
+      <div>Preço sugerido</div>
+      <div class="preco" id="precoSugerido">R$ 0,00</div>
+    </div>
+
+    <div>Lucro líquido: <strong id="lucro">R$ 0,00</strong></div>
+    <div>Margem real: <strong id="margemReal">0%</strong></div>
+    <div class="status" id="status"></div>
+  </div>
+
+</div>
+
 <script>
-  const btnMargem = document.getElementById("btnMargem");
-  const btnPreco = document.getElementById("btnPreco");
-  const campoMargem = document.getElementById("campoMargem");
-  const campoPreco = document.getElementById("campoPreco");
-  const precoBox = document.getElementById("precoSugeridoBox");
+const btnPreco = document.getElementById("btnPreco");
+const btnMargem = document.getElementById("btnMargem");
 
-  btnMargem.onclick = () => {
-    btnMargem.classList.add("active");
-    btnPreco.classList.remove("active");
-    campoMargem.style.display = "block";
-    campoPreco.style.display = "none";
-    precoBox.style.display = "block";
-  };
+const campoPreco = document.getElementById("campoPreco");
+const campoMargem = document.getElementById("campoMargem");
+const precoBox = document.getElementById("precoSugeridoBox");
 
-  btnPreco.onclick = () => {
-    btnPreco.classList.add("active");
-    btnMargem.classList.remove("active");
-    campoPreco.style.display = "block";
-    campoMargem.style.display = "none";
-    precoBox.style.display = "none";
-  };
+btnPreco.onclick = () => {
+  btnPreco.classList.add("active");
+  btnMargem.classList.remove("active");
 
-  document.querySelectorAll("input").forEach(i =>
-    i.addEventListener("input", calcular)
-  );
+  campoPreco.style.display="block";
+  campoMargem.style.display="none";
+  precoBox.style.display="none";
 
-  function calcular() {
-    const custo = (+custoProduto.value || 0) + (+outros.value || 0);
-    const comissao = (+comissao.value || 0) / 100;
-    const imposto = (+imposto.value || 0) / 100;
-    const taxa = +taxaFixa.value || 0;
+  document.getElementById("custoProduto").disabled = true;
+  document.getElementById("precoVenda").disabled = false;
+};
 
-    let preco = 0;
+btnMargem.onclick = () => {
+  btnMargem.classList.add("active");
+  btnPreco.classList.remove("active");
 
-    if (btnMargem.classList.contains("active")) {
-      const margem = (+margem.value || 0) / 100;
-      preco = (custo + taxa) / (1 - comissao - imposto - margem);
-      precoSugerido.innerText = "R$ " + preco.toFixed(2);
-    } else {
-      preco = +precoVenda.value || 0;
-    }
+  campoMargem.style.display="block";
+  campoPreco.style.display="none";
+  precoBox.style.display="block";
 
-    const taxas = preco * (comissao + imposto) + taxa;
-    const lucro = preco - taxas - custo;
-    const margemReal = preco > 0 ? (lucro / preco) * 100 : 0;
+  document.getElementById("precoVenda").disabled = true;
+  document.getElementById("custoProduto").disabled = false;
+};
 
-    document.getElementById("lucro").innerText = "R$ " + lucro.toFixed(2);
-    document.getElementById("margemReal").innerText = margemReal.toFixed(2) + "%";
+document.querySelectorAll("input").forEach(i=>{
+  i.addEventListener("input", calcular);
+});
 
-    const status = document.getElementById("status");
-    if (margemReal >= 20) {
-      status.innerText = "Margem saudável";
-      status.className = "status ok";
-    } else {
-      status.innerText = "Margem não saudável";
-      status.className = "status bad";
-    }
+function calcular(){
+  const precoVenda = +precoVendaInput.value || 0;
+}
+
+function calcular(){
+  const custoProduto = +document.getElementById("custoProduto").value || 0;
+  const embalagem = +document.getElementById("embalagem").value || 0;
+  const taxaFixa = +document.getElementById("taxaFixa").value || 0;
+
+  const comissao = (+document.getElementById("comissao").value || 0)/100;
+  const imposto = (+document.getElementById("imposto").value || 0)/100;
+
+  let preco = 0;
+
+  if(btnMargem.classList.contains("active")){
+    const margem = (+document.getElementById("margem").value || 0)/100;
+    preco = (custoProduto + embalagem + taxaFixa) / (1 - comissao - imposto - margem);
+    document.getElementById("precoSugerido").innerText = "R$ " + preco.toFixed(2);
+  }else{
+    preco = +document.getElementById("precoVenda").value || 0;
   }
+
+  const valorComissao = preco * comissao;
+  const valorImposto = preco * imposto;
+
+  const lucro = preco - valorComissao - valorImposto - taxaFixa - embalagem - custoProduto;
+  const margemReal = preco>0 ? (lucro/preco)*100 : 0;
+
+  document.getElementById("lucro").innerText = "R$ " + lucro.toFixed(2);
+  document.getElementById("margemReal").innerText = margemReal.toFixed(2) + "%";
+
+  const status = document.getElementById("status");
+  if(margemReal>=20){
+    status.innerText="Margem saudável";
+    status.className="status ok";
+  }else{
+    status.innerText="Margem não saudável";
+    status.className="status bad";
+  }
+}
 </script>
 </body>
 </html>
